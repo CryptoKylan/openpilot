@@ -3,9 +3,9 @@ from common.numpy_fast import clip
 from selfdrive.config import Conversions as CV
 
 # kph
-V_CRUISE_MAX = 144
-V_CRUISE_MIN = 8
-V_CRUISE_DELTA = 8
+V_CRUISE_MAX = 145
+V_CRUISE_MIN = 5
+V_CRUISE_DELTA = 5
 V_CRUISE_ENABLE_MIN = 40
 
 
