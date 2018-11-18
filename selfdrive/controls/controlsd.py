@@ -490,13 +490,13 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
       pass
 
   prof = Profiler(False)  # off by default
-  
+
   ########## BEGIN Tuning Mod #############
   tune_file = "/sdcard/tuning/tune.txt"
   last_mod_time = 0
   mod_time = 0
   ########## END Tuning Mod #############
-
+  
   while True:
     prof.checkpoint("Ratekeeper", ignore=True)
 
@@ -524,7 +524,9 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
     CC = data_send(PL.perception_state, plan, plan_ts, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk, carstate, carcontrol,
       live100, livempc, AM, driver_status, LaC, LoC, angle_offset, passive)
     prof.checkpoint("Sent")
-    
+
+    rk.keep_time()  # Run at 100Hz
+
     ########## BEGIN Tuning Mod #############
     if rk.frame % 100 == 29:
       try:
@@ -545,10 +547,10 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
           CP.steerKpV = tuning.steerKpV
           CP.steerKiV = tuning.steerKiV
           CP.steerKf = tuning.steerKf[0]
+          #CP.steerKiBP = tuning.steerKiBP
+          #CP.steerKpBP = tuning.steerKpBP
+          CP.steerRatio = tuning.steerRatio[0]
           CP.steerActuatorDelay = tuning.steerActuatorDelay[0]
-          CP.steerRateCost = tuning.steerRateCost[0]
-          #CP.tireStiffnessFront = tuning.tireStiffnessFront[0]
-          #CP.tireStiffnessRear = tuning.tireStiffnessRear[0]
 
           last_mod_time = os.path.getmtime(tune_file)
         else:
@@ -557,18 +559,17 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
         print "CP.steerKpV: %s" % CP.steerKpV
         print "CP.steerKiV: %s" % CP.steerKiV
         print "CP.steerKf: %s" % CP.steerKf
-        #print "CP.steerKiBP: %s" % CP.steerKiBP
-        #print "CP.steerKpBP: %s" % CP.steerKpBP
+        print "CP.steerKiBP: %s" % CP.steerKiBP
+        print "CP.steerKpBP: %s" % CP.steerKpBP
+        print "CP.steerRatio: %s" % CP.steerRatio
         print "CP.steerActuatorDelay: %s" % CP.steerActuatorDelay
-        print "CP.steerRateCost: %s" % CP.steerRateCost
-        #print "CP.tireStiffnessFront: %s" % CP.tireStiffnessFront
-        #print "CP.tireStiffnessRear: %s" % CP.tireStiffnessRear
 
         VM.update_rt_params(CP)
         LaC.update_rt_params(CP)
     ########## END Tuning Mod #############
 
-    rk.keep_time()  # Run at 100Hz
+    # *** run loop at fixed rate ***
+
     prof.display()
 
 
