@@ -106,7 +106,7 @@ class VehicleModel(object):
     self.cR = CP.tireStiffnessRear
     self.sR = CP.steerRatio
     self.chi = CP.steerRatioRear
-    
+
   def update_rt_params(self, CP):
     # Update parameters used in real-time tuning if called from real-time tuning logic in controlsd
     # TODO:  Determine if really necessary
@@ -119,6 +119,9 @@ class VehicleModel(object):
     self.cR = CP.tireStiffnessRear
     self.sR = CP.steerRatio
     #self.chi = CP.steerRatioRear
+
+  def update_state(self, state):
+    self.state = state
 
   def steady_state_sol(self, sa, u):
     """Returns the steady state solution.
