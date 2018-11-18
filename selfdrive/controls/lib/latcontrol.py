@@ -36,6 +36,7 @@ class LatControl(object):
     self.pid._k_p = (CP.steerKpBP, CP.steerKpV)    # proportional gain
     self.pid._k_i = (CP.steerKiBP, CP.steerKiV)    # integral gain
     self.pid.k_f = CP.steerKf                         # feedforward gain
+    self.setup_mpc(CP.steerRateCost)
 
   def setup_mpc(self, steer_rate_cost):
     self.libmpc = libmpc_py.libmpc
