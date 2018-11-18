@@ -76,7 +76,8 @@ def fingerprint(logcan, timeout):
 
     # bail if no cars left or we've been waiting too long
     elif len(candidate_cars) == 0 or (timeout and (ts - st_passive) > timeout):
-      return None, finger
+      #return None, finger
+      return "TESLA MODEL S", finger
 
     time.sleep(0.01)
 
@@ -125,4 +126,4 @@ def get_params(logcan, sendcan=None, passive=True):
 
   params = interface_cls.get_params(candidate, fingerprints)
 
-return params
+  return params
