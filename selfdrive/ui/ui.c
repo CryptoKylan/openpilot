@@ -1419,6 +1419,7 @@ static void ui_draw_vision_speedlimit(UIState *s) {
     snprintf(maxspeed_str, sizeof(maxspeed_str), "%d", (int)(speedlimit * 2.2369363 + 0.5));
     nvgText(s->vg, viz_maxspeed_x+viz_maxspeed_w/2, viz_maxspeed_y + 170, maxspeed_str, NULL);
   }
+  screen_draw_tuning(s);
 }
 
 static void ui_draw_vision_speed(UIState *s) {
@@ -1973,8 +1974,8 @@ static void ui_update(UIState *s) {
         }
         s->scene.v_cruise = datad.vCruise;
         s->scene.v_ego = datad.vEgo;
-		    s->scene.angleSteers = datad.angleSteers;
-		    s->scene.angleSteersDes = datad.angleSteersDes;
+		s->scene.angleSteers = datad.angleSteers;
+		s->scene.angleSteersDes = datad.angleSteersDes;
         s->scene.curvature = datad.curvature;
         s->scene.engaged = datad.enabled;
         s->scene.engageable = datad.engageable;
@@ -2141,7 +2142,7 @@ static void ui_update(UIState *s) {
             s->scene.maxCpuTemp=datad.cpu3;
         }
       s->scene.maxBatTemp=datad.bat;
-	    s->scene.freeSpace=datad.freeSpace;
+	  s->scene.freeSpace=datad.freeSpace;
 	   //BBB END CPU TEMP
       } else if (eventd.which == cereal_Event_uiLayoutState) {
         struct cereal_UiLayoutState datad;
