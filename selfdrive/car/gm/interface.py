@@ -95,7 +95,7 @@ class CarInterface(object):
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
       
-    elif candidate == CAR.ACADIA_DENALI:
+    elif candidate == CAR.ACADIA:
       # engage speed is decided by pcm
       ret.minEnableSpeed = -1
       ret.mass = 4353. * CV.LB_TO_KG + std_cargo
