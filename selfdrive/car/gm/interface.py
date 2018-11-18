@@ -167,9 +167,7 @@ class CarInterface(object):
 
       ret.stoppingControl = True
       ret.startAccel = 0.8
-      ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
-      ret.steerRateCost = 1.0
-      
+            
     elif candidate == CAR.ACADIA:
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
       ret.steerKpV, ret.steerKiV = [[0.67], [0.25]]
@@ -193,9 +191,9 @@ class CarInterface(object):
 
       ret.stoppingControl = True
       ret.startAccel = 0.8
-      ret.steerActuatorDelay = 0.15  # Default delay, not measured yet
-      ret.steerRateCost = 1.0
-
+    
+    ret.steerActuatorDelay = 0.15  # Default delay, not measured yet
+    ret.steerRateCost = 1.0
     ret.steerControlType = car.CarParams.SteerControlType.torque
 
     return ret
