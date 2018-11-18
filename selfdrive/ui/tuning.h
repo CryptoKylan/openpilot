@@ -32,7 +32,7 @@
 
 #include "custom_touch.h"
 
-#define VERSION "0.0.3"
+#define VERSION "0.0.4.1"
 
 #define ERROR_NO_FILE 1
 #define BTN_NONE 0
@@ -522,6 +522,8 @@ void screen_draw_tuning(UIState *s) {
   
   if (tune_enabled && status != ERROR_NO_FILE) {
 
+  nvgFontFace(s->vg, "courbd");
+
   if (current_property != -1) {
 
     // increase button
@@ -538,7 +540,7 @@ void screen_draw_tuning(UIState *s) {
 
     nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
     nvgFontSize(s->vg, 120);
-    nvgText(s->vg,increase_button.pos_x+30,increase_button.pos_y+90,"+",NULL);
+    nvgText(s->vg,increase_button.pos_x+60,increase_button.pos_y+90,"+",NULL);
 
     // decrease button
     nvgBeginPath(s->vg);
@@ -554,7 +556,7 @@ void screen_draw_tuning(UIState *s) {
 
     nvgFontSize(s->vg, 120);
     nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
-    nvgText(s->vg,decrease_button.pos_x+30,decrease_button.pos_y+90,"-",NULL);
+    nvgText(s->vg,decrease_button.pos_x+60,decrease_button.pos_y+90,"-",NULL);
   }
 
   // Draw current tune values
@@ -779,7 +781,7 @@ void toggle_tune() {
 }
 
 bool ui_element_clicked(int touch_x, int touch_y, ui_element el) {
-  int padding = 20; // Increase touch region by this many pixels so it's not as precise
+  int padding = 35; // Increase touch region by this many pixels so it's not as precise
   if (touch_x >= (el.pos_x-padding) && touch_x <= (int)(el.pos_x+el.width+padding)) {
     if (touch_y >= (el.pos_y-padding) && touch_y <= (int)(el.pos_y+el.height+padding)) {
       return true;
@@ -846,7 +848,7 @@ void tuning( UIState *s, int touch_x, int touch_y, int key_up) {
     current_button = BTN_TUNE;
   }
 
-  screen_draw_tuning(s);
+  //screen_draw_tuning(s);
 
 /*
   if (touch_x > 0) {
