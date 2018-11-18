@@ -10,7 +10,7 @@ from selfdrive.can.packer import CANPacker
 
 class CarControllerParams():
   def __init__(self, car_fingerprint):
-    if car_fingerprint in (CAR.VOLT, CAR.MALIBU):
+    if car_fingerprint in (CAR.VOLT, CAR.MALIBU, CAR.ACADIA):
       self.STEER_MAX = 300
       self.STEER_STEP = 2              # how often we update the steer cmd
       self.STEER_DELTA_UP = 7          # ~0.75s time to peak torque (255/50hz/0.75s)
