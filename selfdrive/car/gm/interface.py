@@ -177,8 +177,8 @@ class CarInterface(object):
 
       ret.steerMaxBP = [0.] # m/s
       ret.steerMaxV = [1.]
-      ret.gasMaxBP = [0.]
-      ret.gasMaxV = [0.5]
+      ret.gasMaxBP = [0., 5.]
+      ret.gasMaxV = [1., 0.5]
       ret.brakeMaxBP = [0.]
       ret.brakeMaxV = [1.]
       ret.longPidDeadzoneBP = [0.]
@@ -186,8 +186,8 @@ class CarInterface(object):
 
       ret.longitudinalKpBP = [0., 5., 35.]
       ret.longitudinalKpV = [3.5, 1.2, 0.7]
-      ret.longitudinalKiBP = [0., 35.]
-      ret.longitudinalKiV = [0.11, 0.08]
+      ret.longitudinalKiBP = [0., 5.,  35.]
+      ret.longitudinalKiV = [0.25, 0.11, 0.08]
 
       ret.steerLimitAlert = True
 
