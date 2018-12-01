@@ -1,7 +1,7 @@
 from common.numpy_fast import interp
 from selfdrive.controls.lib.latcontrol_helpers import model_polyfit, calc_desired_path, compute_path_pinv
 
-CAMERA_OFFSET = 0.055  # m from center car to camera
+CAMERA_OFFSET = 0.045  # m from center car to camera
 
 class PathPlanner(object):
   def __init__(self):
@@ -35,7 +35,7 @@ class PathPlanner(object):
       self.lane_width_certainty += 0.05 * (lr_prob - self.lane_width_certainty)
       current_lane_width = abs(l_poly[3] - r_poly[3])
       self.lane_width_estimate += 0.005 * (current_lane_width - self.lane_width_estimate)
-      speed_lane_width = interp(v_ego, [0., 31.], [3., 3.8])
+      speed_lane_width = interp(v_ego, [0., 31.], [2.85., 3.8])
       self.lane_width = self.lane_width_certainty * self.lane_width_estimate + \
                         (1 - self.lane_width_certainty) * speed_lane_width
 
