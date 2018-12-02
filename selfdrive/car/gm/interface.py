@@ -95,6 +95,17 @@ class CarInterface(object):
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
       
+    elif candidate == CAR.HOLDEN_ASTRA:
+      # kg of standard extra cargo to count for driver, gas, etc...
+      ret.mass = 1363 + std_cargo
+      ret.wheelbase = 2.662
+      # Remaining parameters copied from Volt for now
+      ret.centerToFront = ret.wheelbase * 0.4
+      ret.minEnableSpeed = 18 * CV.MPH_TO_MS
+      ret.safetyModel = car.CarParams.SafetyModels.gm
+      ret.steerRatio = 15.7
+      ret.steerRatioRear = 0.
+      
     elif candidate == CAR.ACADIA:
       # engage speed is decided by pcm
       ret.minEnableSpeed = -1
@@ -144,7 +155,7 @@ class CarInterface(object):
 
 
     # same tuning for Volt and CT6 for now
-    if candidate in (CAR.VOLT, CAR.CADILLAC_CT6):
+    if candidate in (CAR.VOLT, CAR.CADILLAC_CT6, CAR.HOLDEN_ASTRA):
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
       ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
       ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
@@ -301,7 +312,7 @@ class CarInterface(object):
     if ret.seatbeltUnlatched:
       events.append(create_event('seatbeltNotLatched', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
 
-    if self.CS.car_fingerprint in (CAR.VOLT, CAR.MALIBU, CAR.ACADIA):
+    if self.CS.car_fingerprint in (CAR.VOLT, CAR.MALIBU, CAR.ACADIA, CAR.HOLDEN_ASTRA):
 
       if self.CS.brake_error:
         events.append(create_event('brakeUnavailable', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
