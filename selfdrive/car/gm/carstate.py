@@ -31,7 +31,7 @@ def get_powertrain_can_parser(CP, canbus):
     ("LKATorqueDeliveredStatus", "PSCMStatus", 0),
   ]
 
-  if CP.carFingerprint in (CAR.VOLT, CAR.MALIBU, CAR.ACADIA):
+  if CP.carFingerprint in (CAR.VOLT, CAR.MALIBU, CAR.ACADIA, CAR.HOLDEN_ASTRA):
     signals += [
       ("RegenPaddle", "EBCMRegenPaddle", 0),
       ("TractionControlOn", "ESPStatus", 0),
