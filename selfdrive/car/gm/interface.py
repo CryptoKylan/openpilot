@@ -174,7 +174,7 @@ class CarInterface(object):
       
     if candidate == CAR.ACADIA:
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-      ret.steerKpV, ret.steerKiV = [[0.6], [0.2]]
+      ret.steerKpV, ret.steerKiV = [[0.64], [0.1]]
       ret.steerKf = 0.00006  # full torque for 20 deg at 80mph means 0.00007818594
 
       ret.steerMaxBP = [0.] # m/s
