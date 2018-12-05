@@ -144,7 +144,7 @@ class CarInterface(object):
 
 
     # same tuning for Volt and CT6 for now
-    if candidate in (CAR.VOLT, CAR.CADILLAC_CT6):
+    if candidate in (CAR.VOLT, CAR.MALIBU, CAR.HOLDEN_ASTRA, CAR.CADILLAC_CT6):
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
       ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
       ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
