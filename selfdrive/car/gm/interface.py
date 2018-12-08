@@ -66,36 +66,55 @@ class CarInterface(object):
     std_cargo = 136
 
     if candidate == CAR.VOLT:
-      # supports stop and go, but initial engage must be above 18mph (which include conservatism)
-      ret.minEnableSpeed = 18 * CV.MPH_TO_MS
-      # kg of standard extra cargo to count for driver, gas, etc...
-      ret.mass = 1607 + std_cargo
+      ret.minEnableSpeed = 18 * CV.MPH_TO_MS      # supports stop and go, but initial engage must be above 18mph (which include conservatism)
+      ret.mass = 1607 + std_cargo      # kg of standard extra cargo to count for driver, gas, etc...
       ret.safetyModel = car.CarParams.SafetyModels.gm
       ret.wheelbase = 2.69
       ret.steerRatio = 15.7
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
+      ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
+      ret.longitudinalKpBP = [5., 35.]
+      ret.longitudinalKpV = [2.4, 1.5]
+      ret.longitudinalKiBP = [0.]
+      ret.longitudinalKiV = [0.36]
+      ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
 
     elif candidate == CAR.MALIBU:
-      # supports stop and go, but initial engage must be above 18mph (which include conservatism)
-      ret.minEnableSpeed = 18 * CV.MPH_TO_MS
+      ret.minEnableSpeed = 18 * CV.MPH_TO_MS      # supports stop and go, but initial engage must be above 18mph (which include conservatism)
       ret.mass = 1496 + std_cargo
       ret.safetyModel = car.CarParams.SafetyModels.gm
       ret.wheelbase = 2.83
       ret.steerRatio = 15.8
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
+      ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
+      ret.longitudinalKpBP = [5., 35.]
+      ret.longitudinalKpV = [2.4, 1.5]
+      ret.longitudinalKiBP = [0.]
+      ret.longitudinalKiV = [0.36]
+      ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
 
     elif candidate == CAR.HOLDEN_ASTRA:
-      # kg of standard extra cargo to count for driver, gas, etc...
-      ret.mass = 1363 + std_cargo
-      ret.wheelbase = 2.662
-      # Remaining parameters copied from Volt for now
-      ret.centerToFront = ret.wheelbase * 0.4
       ret.minEnableSpeed = 18 * CV.MPH_TO_MS
+      ret.mass = 1363 + std_cargo      # kg of standard extra cargo to count for driver, gas, etc...
       ret.safetyModel = car.CarParams.SafetyModels.gm
+      ret.wheelbase = 2.662
       ret.steerRatio = 15.7
       ret.steerRatioRear = 0.
+      ret.centerToFront = ret.wheelbase * 0.4
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
+      ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
+      ret.longitudinalKpBP = [5., 35.]
+      ret.longitudinalKpV = [2.4, 1.5]
+      ret.longitudinalKiBP = [0.]
+      ret.longitudinalKiV = [0.36]
+      ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
 
     elif candidate == CAR.ACADIA:
       ret.minEnableSpeed = -1 # engage speed is decided by pcm
@@ -105,6 +124,14 @@ class CarInterface(object):
       ret.steerRatio = 14.4  #end to end is 13.46
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.63], [0.1]]
+      ret.steerKf = 0.00006  # full torque for 20 deg at 80mph means 0.00007818594
+      ret.longitudinalKpBP = [0., 5., 35.]
+      ret.longitudinalKpV = [3.5, 1.2, 0.7]
+      ret.longitudinalKiBP = [0., 35.]
+      ret.longitudinalKiV = [0.11, 0.08]
+      ret.steerActuatorDelay = 0.15  # Default delay, not measured yet
 
     elif candidate == CAR.CADILLAC_ATS:
       ret.minEnableSpeed = 18 * CV.MPH_TO_MS
@@ -114,6 +141,14 @@ class CarInterface(object):
       ret.steerRatio = 15.3
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.49
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
+      ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
+      ret.longitudinalKpBP = [5., 35.]
+      ret.longitudinalKpV = [2.4, 1.5]
+      ret.longitudinalKiBP = [0.]
+      ret.longitudinalKiV = [0.36]
+      ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
 
     elif candidate == CAR.CADILLAC_CT6:
       # engage speed is decided by pcm
@@ -125,6 +160,14 @@ class CarInterface(object):
       ret.steerRatio = 14.6   # it's 16.3 without rear active steering
       ret.steerRatioRear = 0. # TODO: there is RAS on this car!
       ret.centerToFront = ret.wheelbase * 0.465
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
+      ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
+      ret.longitudinalKpBP = [5., 35.]
+      ret.longitudinalKpV = [2.4, 1.5]
+      ret.longitudinalKiBP = [0.]
+      ret.longitudinalKiV = [0.36]
+      ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
 
 
     # hardcoding honda civic 2016 touring params so they can be used to
@@ -152,33 +195,20 @@ class CarInterface(object):
                             ret.mass / mass_civic * \
                             (ret.centerToFront / ret.wheelbase) / (centerToFront_civic / wheelbase_civic)
 
-
-    # same tuning for Volt and CT6 for now
-    ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-    ret.steerKpV, ret.steerKiV = [[0.2], [0.00]]
-    ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
-
     ret.steerMaxBP = [0.] # m/s
     ret.steerMaxV = [1.]
     ret.gasMaxBP = [0.]
-    ret.gasMaxV = [.5]
+    ret.gasMaxV = [0.5]
     ret.brakeMaxBP = [0.]
     ret.brakeMaxV = [1.]
+    
     ret.longPidDeadzoneBP = [0.]
     ret.longPidDeadzoneV = [0.]
-
-    ret.longitudinalKpBP = [5., 35.]
-    ret.longitudinalKpV = [2.4, 1.5]
-    ret.longitudinalKiBP = [0.]
-    ret.longitudinalKiV = [0.36]
-
-    ret.steerLimitAlert = True
-
-    ret.stoppingControl = True
-    ret.startAccel = 0.8
-
-    ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
+    
     ret.steerRateCost = 1.0
+    ret.startAccel = 0.8
+    ret.steerLimitAlert = True
+    ret.stoppingControl = True
     ret.steerControlType = car.CarParams.SteerControlType.torque
 
     return ret
