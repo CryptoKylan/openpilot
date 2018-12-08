@@ -201,7 +201,6 @@ class CarInterface(object):
     ret.gasMaxV = [.5]
     ret.brakeMaxBP = [0.]
     ret.brakeMaxV = [1.]
-
     ret.longPidDeadzoneBP = [0.]
     ret.longPidDeadzoneV = [0.]
 
