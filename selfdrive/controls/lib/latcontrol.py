@@ -40,7 +40,7 @@ class LatControl(object):
                             k_f=CP.steerKf, pos_limit=1.0)
     self.last_cloudlog_t = 0.0
     self.setup_mpc(CP.steerRateCost)
-    self.smooth_factor = 2.0 * CP.steerActuatorDelay / _DT      # Multiplier for inductive component (feed forward)
+    self.smooth_factor = 55.0      # Multiplier for inductive component (feed forward)
     self.projection_factor = 2.0 * _DT                       #  Mutiplier for reactive component (PI)
     self.accel_limit = 5.0                                 # Desired acceleration limit to prevent "whip steer" (resistive component)
     self.ff_angle_factor = 0.5         # Kf multiplier for angle-based feed forward
@@ -59,6 +59,14 @@ class LatControl(object):
     self.frames = 0
     self.curvature_factor = 0.0
     self.slip_factor = 0.0
+    
+  def update_rt_params(self, CP):
+    # TODO:  Is this really necessary, or is the original reference preserved through the cap n' proto setup?
+    # Real-time tuning:  Update these values from the CP if called from real-time tuning logic in controlsd
+    self.pid._k_p = (CP.steerKpBP, CP.steerKpV)    # proportional gain
+    self.pid._k_i = (CP.steerKiBP, CP.steerKiV)    # integral gain
+    self.pid.k_f = CP.steerKf                         # feedforward gain
+    self.setup_mpc(CP.steerRateCost)
 
   def setup_mpc(self, steer_rate_cost):
     self.libmpc = libmpc_py.libmpc
