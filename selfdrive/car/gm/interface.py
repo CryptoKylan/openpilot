@@ -198,13 +198,13 @@ class CarInterface(object):
     ret.steerMaxBP = [0.] # m/s
     ret.steerMaxV = [1.]
     ret.gasMaxBP = [0.]
-    ret.gasMaxV = [0.5]
+    ret.gasMaxV = [.5]
     ret.brakeMaxBP = [0.]
     ret.brakeMaxV = [1.]
-    
+
     ret.longPidDeadzoneBP = [0.]
     ret.longPidDeadzoneV = [0.]
-    
+
     ret.steerRateCost = 1.0
     ret.startAccel = 0.8
     ret.steerLimitAlert = True
