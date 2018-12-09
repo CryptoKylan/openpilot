@@ -88,8 +88,8 @@ BO_ 388 PSCMStatus: 8 K43_PSCM
  SG_ HandsOffSWDetectionMode : 20|2@0+ (1,0) [0|3] "" NEO
  SG_ HandsOffSWlDetectionStatus : 21|1@0+ (1,0) [0|1] "" NEO
  SG_ LKATorqueDeliveredStatus : 5|3@0+ (1,0) [0|7] "" NEO
- SG_ LKADriverAppldTrq : 50|11@0- (0.01,0) [-10.24|10.23] "Nm" NEO
  SG_ LKATotalTorqueDelivered : 2|11@0- (0.01,0) [-10.24|10.23] "Nm" NEO
+ SG_ LKADriverAppldTrq : 50|11@0- (0.01,-0.1) [-10.24|10.23] "Nm" NEO
 
 BO_ 417 AcceleratorPedal: 8 XXX
  SG_ AcceleratorPedal : 55|8@0+ (1,0) [0|0] "" NEO
@@ -196,8 +196,7 @@ CM_ BU_ K17_EBCM "Electronic Brake Control Module";
 CM_ BU_ K20_ECM "Engine Control Module";
 CM_ BU_ K114B_HPCM "Hybrid Powertrain Control Module";
 CM_ BU_ NEO "Comma NEO";
-CM_ BU_ K124_ASCM "Active Safety Control Module";CM_ SG_ 190 GasPedalAndAcc "ACC baseline is 62";CM_ SG_ 381 MSG17D_AccPower "Need to investigate";
-CM_ SG_ 451 GasPedalAndAcc2 "ACC baseline is 62";
+CM_ BU_ K124_ASCM "Active Safety Control Module";CM_ SG_ 190 GasPedalAndAcc "ACC baseline is 62";CM_ SG_ 381 MSG17D_AccPower "Need to investigate";CM_ SG_ 451 GasPedalAndAcc2 "ACC baseline is 62";
 VAL_ 309 PRNDL 3 "Reverse" 2 "Drive" 1 "Neutral" 0 "Park" ;
 VAL_ 309 ESPButton 1 "Active" 0 "Inactive" ;
 VAL_ 320 Intellibeam 1 "Active" 0 "Inactive" ;
