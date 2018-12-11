@@ -176,7 +176,7 @@ class ALCAController(object):
     self.laneChange_wait = CS.CL_WAIT_BEFORE_START
    
     # Basic highway lane change logic
-    #blindspot = CS.blind_spot_on
+    blindspot = CS.blind_spot_on
     #if changing_lanes:
       #if blindspot:
         #self.blindspot_blink_counter = 0
