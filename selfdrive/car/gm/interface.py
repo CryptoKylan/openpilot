@@ -155,31 +155,58 @@ class CarInterface(object):
 
 
     # same tuning for Volt and CT6 for now
-    ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-    ret.steerKpV, ret.steerKiV = [[0.2], [0.00]]
-    ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
+    if candidate in (CAR.VOLT, CAR.MALIBU, CAR.HOLDEN_ASTRA, CAR.CADILLAC_CT6, CAR.CADILLAC_ATS):
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
+      ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
 
-    ret.steerMaxBP = [0.] # m/s
-    ret.steerMaxV = [1.]
-    ret.gasMaxBP = [0.]
-    ret.gasMaxV = [.5]
-    ret.brakeMaxBP = [0.]
-    ret.brakeMaxV = [1.]
-    ret.longPidDeadzoneBP = [0.]
-    ret.longPidDeadzoneV = [0.]
+      ret.steerMaxBP = [0.] # m/s
+      ret.steerMaxV = [1.]
+      ret.gasMaxBP = [0.]
+      ret.gasMaxV = [0.5]
+      ret.brakeMaxBP = [0.]
+      ret.brakeMaxV = [1.]
+      ret.longPidDeadzoneBP = [0.]
+      ret.longPidDeadzoneV = [0.]
 
-    ret.longitudinalKpBP = [5., 35.]
-    ret.longitudinalKpV = [2.4, 1.5]
-    ret.longitudinalKiBP = [0.]
-    ret.longitudinalKiV = [0.36]
+      ret.longitudinalKpBP = [5., 35.]
+      ret.longitudinalKpV = [2.4, 1.5]
+      ret.longitudinalKiBP = [0.]
+      ret.longitudinalKiV = [0.36]
 
-    ret.steerLimitAlert = True
+      ret.steerLimitAlert = True
 
-    ret.stoppingControl = True
-    ret.startAccel = 0.8
+      ret.stoppingControl = True
+      ret.startAccel = 0.8
+      ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
+      ret.steerRateCost = 1.0
+      
+    elif candidate == CAR.ACADIA:
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.63], [0.25]]
+      ret.steerKf = 0.00006  # full torque for 20 deg at 80mph means 0.00007818594
 
-    ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
-    ret.steerRateCost = 1.0
+      ret.steerMaxBP = [0.] # m/s
+      ret.steerMaxV = [1.]
+      ret.gasMaxBP = [0., 5.]
+      ret.gasMaxV = [1., 0.5]
+      ret.brakeMaxBP = [0.]
+      ret.brakeMaxV = [1.]
+      ret.longPidDeadzoneBP = [0.]
+      ret.longPidDeadzoneV = [0.]
+
+      ret.longitudinalKpBP = [0., 5., 35.]
+      ret.longitudinalKpV = [3.5, 1.2, 0.7]
+      ret.longitudinalKiBP = [0., 5., 35.]
+      ret.longitudinalKiV = [0.25, 0.12, 0.08]
+
+      ret.steerLimitAlert = True
+
+      ret.stoppingControl = True
+      ret.startAccel = 0.8
+      ret.steerActuatorDelay = 0.15  # Default delay, not measured yet
+      ret.steerRateCost = 1.0
+
     ret.steerControlType = car.CarParams.SteerControlType.torque
 
     return ret
