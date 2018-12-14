@@ -9,13 +9,13 @@
 //      brake > 0mph
 
 const int GM_MAX_STEER = 300;
-const int GM_MAX_RT_DELTA = 150;          // max delta torque allowed for real time checks
+const int GM_MAX_RT_DELTA = 128;          // max delta torque allowed for real time checks
 const int32_t GM_RT_INTERVAL = 250000;    // 250ms between real time checks
-const int GM_MAX_RATE_UP = 8;
-const int GM_MAX_RATE_DOWN = 20;
+const int GM_MAX_RATE_UP = 7;
+const int GM_MAX_RATE_DOWN = 17;
 const int GM_DRIVER_TORQUE_ALLOWANCE = 50;
 const int GM_DRIVER_TORQUE_FACTOR = 4;
-const int GM_MAX_GAS = 4000;
+const int GM_MAX_GAS = 3072;
 const int GM_MAX_REGEN = 1404;
 const int GM_MAX_BRAKE = 350;
 
@@ -187,21 +187,20 @@ static int gm_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
       }
     }
 
-    // reset to 0 if either controls is not allowed or there's a violation
-    if (violation || !current_controls_allowed) {
-      desired_torque = 0;
-      gm_desired_torque_last = 0;
-      gm_rt_torque_last = 0;
-      gm_ts_last = ts;
-    }
-    
     // no torque if controls is not allowed
     if (!current_controls_allowed && (desired_torque != 0)) {
       violation = 1;
     }
 
+    // reset to 0 if either controls is not allowed or there's a violation
+    if (violation || !current_controls_allowed) {
+      gm_desired_torque_last = 0;
+      gm_rt_torque_last = 0;
+      gm_ts_last = ts;
+    }
+
     if (violation) {
-      return true;
+      return false;
     }
   }
 
