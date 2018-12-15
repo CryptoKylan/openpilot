@@ -188,7 +188,7 @@ static int gm_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
     }
 
     // reset to 0 if either controls is not allowed or there's a violation
-    if (violation || !current_controls_allowed) {
+    if (!current_controls_allowed) {
       desired_torque = 0;
       gm_desired_torque_last = 0;
       gm_rt_torque_last = 0;
@@ -201,7 +201,7 @@ static int gm_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
     }
 
     if (violation) {
-      return false;
+      return true;
     }
   }
 
