@@ -259,7 +259,7 @@ class CarInterface(object):
     ret.seatbeltUnlatched = not self.CS.seatbelt
     ret.gearShifter = self.CS.gear_shifter
     #ret.readdistancelines = self.CS.follow_level
-    ret.distanceToggle = self.CS.follow_level
+    #ret.distanceToggle = self.CS.follow_level
 
     buttonEvents = []
 
