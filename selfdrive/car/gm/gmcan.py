@@ -92,7 +92,7 @@ def create_acc_dashboard_command(packer, bus, acc_engaged, target_speed_kph, lea
     "ACCAlwaysOne" : 1,
     "ACCResumeButton" : 0,
     "ACCSpeedSetpoint" : target_speed,
-    "ACCGapLevel" : follow_level
+    "ACCGapLevel" : follow_level,
     "ACCCmdActive" : acc_engaged,
     "ACCAlwaysOne2" : 1,
     "ACCLeadCar" : lead_car_in_sight
