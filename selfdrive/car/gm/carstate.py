@@ -57,7 +57,7 @@ class CarState(object):
     self.car_fingerprint = CP.carFingerprint
     self.cruise_buttons = CruiseButtons.UNPRESS
     self.prev_distance_button = 0
-     self.distance_button = 0
+    self.distance_button = 0
     self.left_blinker_on = False
     self.prev_left_blinker_on = False
     self.right_blinker_on = False
