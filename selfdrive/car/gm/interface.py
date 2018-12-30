@@ -258,6 +258,8 @@ class CarInterface(object):
     ret.doorOpen = not self.CS.door_all_closed
     ret.seatbeltUnlatched = not self.CS.seatbelt
     ret.gearShifter = self.CS.gear_shifter
+    ret.readdistancelines = self.CS.follow_level
+    ret.distanceToggle = self.CS.follow_level
 
     buttonEvents = []
 
@@ -295,6 +297,10 @@ class CarInterface(object):
       buttonEvents.append(be)
 
     ret.buttonEvents = buttonEvents
+    if self.CS.distance_button and self.CS.distance_button != self.CS.prev_distance_button:
+       self.CS.follow_level -= 1
+       if self.CS.follow_level < 1:
+         self.CS.follow_level = 3
 
     events = []
     if not self.CS.can_valid:
