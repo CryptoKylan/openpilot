@@ -115,6 +115,7 @@ struct CarState {
   buttonEvents @11 :List(ButtonEvent);
   leftBlinker @20 :Bool;
   rightBlinker @21 :Bool;
+  readdistancelines @26 :Float32;
   genericToggle @23 :Bool;
 
   # lock info
