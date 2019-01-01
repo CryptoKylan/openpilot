@@ -115,8 +115,9 @@ struct CarState {
   buttonEvents @11 :List(ButtonEvent);
   leftBlinker @20 :Bool;
   rightBlinker @21 :Bool;
-  readdistancelines @26 :Float32;
   genericToggle @23 :Bool;
+  readdistancelines @26 :Float32;
+  lkMode @27 :Bool;
 
   # lock info
   doorOpen @24 :Bool;
@@ -356,7 +357,6 @@ struct CarParams {
   radarOffCan @47 :Bool; # True when radar objects aren't visible on CAN
 
   steerActuatorDelay @48 :Float32; # Steering wheel actuator delay in seconds
-  openpilotLongitudinalControl @50 :Bool; # is openpilot doing the longitudinal control?
 
   enum SteerControlType {
     torque @0;
