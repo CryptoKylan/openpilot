@@ -130,7 +130,7 @@ BO_ 481 ASCMSteeringButton: 7 K124_ASCM
  SG_ DriveModeButton : 39|1@0+ (1,0) [0|1] "" XXX
 
 BO_ 485 PSCMSteeringAngle: 8 K43_PSCM
- SG_ SteeringWheelAngle : 15|16@0- (0.0625,0) [-525|525] "deg"  NEO
+ SG_ SteeringWheelAngle : 15|16@0- (0.0625,0) [-540|540] "deg"  NEO
  SG_ SteeringWheelRate : 27|12@0- (0.5,0) [-100|100] "deg/s"  NEO
 
 BO_ 489 EBCMVehicleDynamic: 8 K17_EBCM
@@ -180,7 +180,6 @@ BO_ 880 ASCMActiveCruiseControlStatus: 6 K124_ASCM
  SG_ ACCGapLevel : 21|2@0+ (1,0) [0|0] ""  NEO
  SG_ ACCResumeButton : 1|1@0+ (1,0) [0|0] ""  NEO
  SG_ ACCCmdActive : 23|1@0+ (1,0) [0|0] ""  NEO
- SG_ FCWAlert : 41|2@0+ (1,0) [0|3] "" XXX
 
 BO_ 1001 ECMVehicleSpeed: 8 K20_ECM
  SG_ VehicleSpeed : 7|16@0+ (0.01,0) [0|0] "mph"  NEO
@@ -253,3 +252,4 @@ VAL_ 715 GasRegenCmdActive 1 "Active" 0 "Inactive" ;
 VAL_ 320 Intellibeam 1 "Active" 0 "Inactive" ;
 VAL_ 320 HighBeamsActive 1 "Active" 0 "Inactive" ;
 VAL_ 320 HighBeamsTemporary 1 "Active" 0 "Inactive" ;
+
