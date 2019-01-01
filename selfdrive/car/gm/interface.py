@@ -62,6 +62,7 @@ class CarInterface(object):
     # Have to go passive if ASCM is online (ACC-enabled cars),
     # or camera is on powertrain bus (LKA cars without ACC).
     ret.enableCamera = not any(x for x in STOCK_CONTROL_MSGS[candidate] if x in fingerprint)
+    ret.openpilotLongitudinalControl = ret.enableCamera
 
     std_cargo = 136
 
@@ -96,6 +97,24 @@ class CarInterface(object):
       ret.safetyModel = car.CarParams.SafetyModels.gm
       ret.steerRatio = 15.7
       ret.steerRatioRear = 0.
+
+    elif candidate == CAR.ACADIA:
+      ret.minEnableSpeed = -1 # engage speed is decided by pcm
+      ret.mass = 4353. * CV.LB_TO_KG + std_cargo
+      ret.safetyModel = car.CarParams.SafetyModels.gm
+      ret.wheelbase = 2.86
+      ret.steerRatio = 14.4  #end to end is 13.46
+      ret.steerRatioRear = 0.
+      ret.centerToFront = ret.wheelbase * 0.4
+
+    elif candidate == CAR.CADILLAC_ATS:
+      ret.minEnableSpeed = 18 * CV.MPH_TO_MS
+      ret.mass = 1601 + std_cargo
+      ret.safetyModel = car.CarParams.SafetyModels.gm
+      ret.wheelbase = 2.78
+      ret.steerRatio = 15.3
+      ret.steerRatioRear = 0.
+      ret.centerToFront = ret.wheelbase * 0.49
 
     elif candidate == CAR.CADILLAC_CT6:
       # engage speed is decided by pcm
@@ -136,31 +155,58 @@ class CarInterface(object):
 
 
     # same tuning for Volt and CT6 for now
-    ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-    ret.steerKpV, ret.steerKiV = [[0.2], [0.00]]
-    ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
+    if candidate in (CAR.VOLT, CAR.MALIBU, CAR.HOLDEN_ASTRA, CAR.CADILLAC_CT6, CAR.CADILLAC_ATS):
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
+      ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
 
-    ret.steerMaxBP = [0.] # m/s
-    ret.steerMaxV = [1.]
-    ret.gasMaxBP = [0.]
-    ret.gasMaxV = [.5]
-    ret.brakeMaxBP = [0.]
-    ret.brakeMaxV = [1.]
-    ret.longPidDeadzoneBP = [0.]
-    ret.longPidDeadzoneV = [0.]
+      ret.steerMaxBP = [0.] # m/s
+      ret.steerMaxV = [1.]
+      ret.gasMaxBP = [0.]
+      ret.gasMaxV = [0.5]
+      ret.brakeMaxBP = [0.]
+      ret.brakeMaxV = [1.]
+      ret.longPidDeadzoneBP = [0.]
+      ret.longPidDeadzoneV = [0.]
 
-    ret.longitudinalKpBP = [5., 35.]
-    ret.longitudinalKpV = [2.4, 1.5]
-    ret.longitudinalKiBP = [0.]
-    ret.longitudinalKiV = [0.36]
+      ret.longitudinalKpBP = [5., 35.]
+      ret.longitudinalKpV = [2.4, 1.5]
+      ret.longitudinalKiBP = [0.]
+      ret.longitudinalKiV = [0.36]
 
-    ret.steerLimitAlert = True
+      ret.steerLimitAlert = True
 
-    ret.stoppingControl = True
-    ret.startAccel = 0.8
+      ret.stoppingControl = True
+      ret.startAccel = 0.8
+      ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
+      ret.steerRateCost = 1.0
+      
+    elif candidate == CAR.ACADIA:
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.61], [0.1]]
+      ret.steerKf = 0.00006  # full torque for 20 deg at 80mph means 0.00007818594
 
-    ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
-    ret.steerRateCost = 1.0
+      ret.steerMaxBP = [0.] # m/s
+      ret.steerMaxV = [1.]
+      ret.gasMaxBP = [0., 5.]
+      ret.gasMaxV = [1., 0.5]
+      ret.brakeMaxBP = [0.]
+      ret.brakeMaxV = [1.]
+      ret.longPidDeadzoneBP = [0.]
+      ret.longPidDeadzoneV = [0.]
+
+      ret.longitudinalKpBP = [0., 5., 35.]
+      ret.longitudinalKpV = [3.5, 1.2, 0.7]
+      ret.longitudinalKiBP = [0., 5., 35.]
+      ret.longitudinalKiV = [0.25, 0.12, 0.08]
+
+      ret.steerLimitAlert = True
+
+      ret.stoppingControl = True
+      ret.startAccel = 0.8
+      ret.steerActuatorDelay = 0.15  # Default delay, not measured yet
+      ret.steerRateCost = 1.0
+
     ret.steerControlType = car.CarParams.SteerControlType.torque
 
     return ret
@@ -212,6 +258,8 @@ class CarInterface(object):
     ret.doorOpen = not self.CS.door_all_closed
     ret.seatbeltUnlatched = not self.CS.seatbelt
     ret.gearShifter = self.CS.gear_shifter
+    ret.readdistancelines = self.CS.follow_level
+    #ret.distanceToggle = self.CS.follow_level
 
     buttonEvents = []
 
@@ -249,6 +297,10 @@ class CarInterface(object):
       buttonEvents.append(be)
 
     ret.buttonEvents = buttonEvents
+    if self.CS.distance_button and self.CS.distance_button != self.CS.prev_distance_button:
+       self.CS.follow_level -= 1
+       if self.CS.follow_level < 1:
+         self.CS.follow_level = 3
 
     events = []
     if not self.CS.can_valid:
@@ -266,7 +318,7 @@ class CarInterface(object):
     if ret.seatbeltUnlatched:
       events.append(create_event('seatbeltNotLatched', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
 
-    if self.CS.car_fingerprint in (CAR.VOLT, CAR.MALIBU, CAR.HOLDEN_ASTRA):
+    if self.CS.car_fingerprint in (CAR.VOLT, CAR.MALIBU, CAR.HOLDEN_ASTRA, CAR.ACADIA, CAR.CADILLAC_ATS):
       if self.CS.brake_error:
         events.append(create_event('brakeUnavailable', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
       if not self.CS.gear_shifter_valid:
