@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-import imp
-import os
 import gc
 import zmq
 import json
+
 from cereal import car, log
 from common.numpy_fast import clip
 from common.realtime import sec_since_boot, set_realtime_priority, Ratekeeper
 from common.profiler import Profiler
 from common.params import Params
+
 import selfdrive.messaging as messaging
 from selfdrive.config import Conversions as CV
 from selfdrive.services import service_list
@@ -25,7 +25,7 @@ from selfdrive.controls.lib.latcontrol import LatControl
 from selfdrive.controls.lib.alertmanager import AlertManager
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.driver_monitor import DriverStatus
-from selfdrive.locationd.calibration_helpers import Calibration, Filter
+from selfdrive.locationd.calibration_values import Calibration, Filter
 
 ThermalStatus = log.ThermalData.ThermalStatus
 State = log.Live100Data.ControlState
@@ -121,14 +121,14 @@ def data_sample(CI, CC, thermal, calibration, health, driver_monitor, gps_locati
   return CS, events, cal_status, cal_perc, overtemp, free_space, low_battery, mismatch_counter
 
 
-def calc_plan(CS, CP, VM, events, PL, LaC, LoC, v_cruise_kph, driver_status, geofence):
+def calc_plan(CS, CP, events, PL, LaC, LoC, v_cruise_kph, driver_status, geofence):
   """Calculate a longitudinal plan using MPC"""
 
   # Slow down when based on driver monitoring or geofence
   force_decel = driver_status.awareness < 0. or (geofence is not None and not geofence.in_geofence)
 
   # Update planner
-  plan_packet = PL.update(CS, CP, VM, LaC, LoC, v_cruise_kph, force_decel)
+  plan_packet = PL.update(CS, LaC, LoC, v_cruise_kph, force_decel)
   plan = plan_packet.plan
   plan_ts = plan_packet.logMonoTime
   events += list(plan.events)
@@ -461,7 +461,6 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
 
   # Write CarParams for radard and boardd safety mode
   params.put("CarParams", CP.to_bytes())
-  params.put("LongitudinalControl", "1" if CP.openpilotLongitudinalControl else "0")
 
   state = State.disabled
   soft_disable_timer = 0
@@ -488,12 +487,6 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
 
   prof = Profiler(False)  # off by default
 
-  ########## BEGIN Tuning Mod #############
-  tune_file = "/sdcard/tuning/tune.txt"
-  last_mod_time = 0
-  mod_time = 0
-  ########## END Tuning Mod #############
-
   while True:
     prof.checkpoint("Ratekeeper", ignore=True)
 
@@ -503,7 +496,7 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
     prof.checkpoint("Sample")
 
     # Define longitudinal plan (MPC)
-    plan, plan_ts = calc_plan(CS, CP, VM, events, PL, LaC, LoC, v_cruise_kph, driver_status, geofence)
+    plan, plan_ts = calc_plan(CS, CP, events, PL, LaC, LoC, v_cruise_kph, driver_status, geofence)
     prof.checkpoint("Plan")
 
     if not passive:
@@ -519,56 +512,10 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
 
     # Publish data
     CC = data_send(PL.perception_state, plan, plan_ts, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk, carstate, carcontrol,
-                   live100, livempc, AM, driver_status, LaC, LoC, angle_offset, passive)
+      live100, livempc, AM, driver_status, LaC, LoC, angle_offset, passive)
     prof.checkpoint("Sent")
 
     rk.keep_time()  # Run at 100Hz
-
-    ########## BEGIN Tuning Mod #############
-    if rk.frame % 100 == 29:
-      try:
-        mod_time = os.path.getmtime(tune_file)
-      except OSError:
-        # File doesn't exist so just use the values from interface.py
-        mod_time = None
-        print "ERROR: Tuning Mod file %s does not exist!" % tune_file
-
-      if last_mod_time != mod_time:
-        if mod_time is not None:
-          # Read from the file and assign the values to CP
-          f = open(tune_file)
-          tuning = imp.load_source('tuning', '', f)
-          f.close()
-
-          # Update CP values from tuning mod
-          CP.steerKpV = tuning.steerKpV
-          CP.steerKiV = tuning.steerKiV
-          CP.steerKf = tuning.steerKf[0]
-          #CP.steerKiBP = tuning.steerKiBP
-          #CP.steerKpBP = tuning.steerKpBP
-          CP.steerRatio = tuning.steerRatio[0]
-          CP.steerActuatorDelay = tuning.steerActuatorDelay[0]
-          CP.steerRateCost = tuning.steerRateCost[0]
-
-          last_mod_time = os.path.getmtime(tune_file)
-        else:
-          last_mod_time = mod_time 
-
-        print "CP.steerKpV: %s" % CP.steerKpV
-        print "CP.steerKiV: %s" % CP.steerKiV
-        print "CP.steerKf: %s" % CP.steerKf
-        print "CP.steerKiBP: %s" % CP.steerKiBP
-        print "CP.steerKpBP: %s" % CP.steerKpBP
-        print "CP.steerRatio: %s" % CP.steerRatio
-        print "CP.steerActuatorDelay: %s" % CP.steerActuatorDelay
-        print "CP.steerRateCost: %s" % CP.steerRateCost
-
-        VM.update_rt_params(CP)
-        LaC.update_rt_params(CP)
-    ########## END Tuning Mod #############
-
-    # *** run loop at fixed rate ***
-
     prof.display()
 
 
