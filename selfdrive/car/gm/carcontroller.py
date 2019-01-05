@@ -13,8 +13,8 @@ class CarControllerParams():
     if car_fingerprint in (CAR.VOLT, CAR.MALIBU, CAR.HOLDEN_ASTRA, CAR.ACADIA, CAR.CADILLAC_ATS):
       self.STEER_MAX = 300
       self.STEER_STEP = 2              # how often we update the steer cmd
-      self.STEER_DELTA_UP = 7          # ~0.75s time to peak torque (255/50hz/0.75s)
-      self.STEER_DELTA_DOWN = 17       # ~0.3s from peak torque to zero
+      self.STEER_DELTA_UP = 8          # ~0.75s time to peak torque (255/50hz/0.75s)
+      self.STEER_DELTA_DOWN = 20       # ~0.3s from peak torque to zero
     elif car_fingerprint == CAR.CADILLAC_CT6:
       self.STEER_MAX = 150
       self.STEER_STEP = 1              # how often we update the steer cmd
@@ -24,7 +24,7 @@ class CarControllerParams():
     self.STEER_DRIVER_ALLOWANCE = 50   # allowed driver torque before start limiting
     self.STEER_DRIVER_MULTIPLIER = 4   # weight driver torque heavily
     self.STEER_DRIVER_FACTOR = 100     # from dbc
-    self.NEAR_STOP_BRAKE_PHASE = 0.5 # m/s, more aggressive braking near full stop
+    self.NEAR_STOP_BRAKE_PHASE = 1.5 # m/s, more aggressive braking near full stop
 
     # Takes case of "Service Adaptive Cruise" and "Service Front Camera"
     # dashboard messages.
@@ -32,7 +32,7 @@ class CarControllerParams():
     self.CAMERA_KEEPALIVE_STEP = 100
 
     # pedal lookups, only for Volt
-    MAX_GAS = 3072              # Only a safety limit
+    MAX_GAS = 4000              # Only a safety limit
     ZERO_GAS = 2048
     MAX_BRAKE = 350             # Should be around 3.5m/s^2, including regen
     self.MAX_ACC_REGEN = 1404  # ACC Regen braking is slightly less powerful than max regen paddle
@@ -142,8 +142,9 @@ class CarController(object):
         can_sends.append(gmcan.create_gas_regen_command(self.packer_pt, canbus.powertrain, apply_gas, idx, enabled, at_full_stop))
 
       # Send dashboard UI commands (ACC status), 25hz
+      follow_level = CS.get_follow_level()
       if (frame % 4) == 0:
-        can_sends.append(gmcan.create_acc_dashboard_command(self.packer_pt, canbus.powertrain, enabled, hud_v_cruise * CV.MS_TO_KPH, hud_show_car))
+        can_sends.append(gmcan.create_acc_dashboard_command(self.packer_pt, canbus.powertrain, enabled, hud_v_cruise * CV.MS_TO_KPH, hud_show_car, follow_level))
 
       # Radar needs to know current speed and yaw rate (50hz),
       # and that ADAS is alive (10hz)
