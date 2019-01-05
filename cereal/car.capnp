@@ -72,6 +72,8 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     calibrationProgress @47;
     lowBattery @48;
     invalidGiraffeHonda @49;
+    manualSteeringRequired @50;
+    manualSteeringRequiredBlinkersOn @51;
   }
 }
 
@@ -116,6 +118,8 @@ struct CarState {
   leftBlinker @20 :Bool;
   rightBlinker @21 :Bool;
   genericToggle @23 :Bool;
+  readdistancelines @26 :Float32;
+  lkMode @27 :Bool;
 
   # lock info
   doorOpen @24 :Bool;

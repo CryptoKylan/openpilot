@@ -56,6 +56,7 @@ def process_hud_alert(hud_alert):
   fcw_display = 0
   steer_required = 0
   acc_alert = 0
+  
   if hud_alert == AH.NONE:          # no alert
     pass
   elif hud_alert == AH.FCW:         # FCW
@@ -64,13 +65,13 @@ def process_hud_alert(hud_alert):
     steer_required = hud_alert[1]
   else:                             # any other ACC alert
     acc_alert = hud_alert[1]
-
+    
   return fcw_display, steer_required, acc_alert
 
 
 HUDData = namedtuple("HUDData",
                      ["pcm_accel", "v_cruise", "mini_car", "car", "X4",
-                      "lanes", "beep", "chime", "fcw", "acc_alert", "steer_required"])
+                      "lanes", "beep", "chime", "fcw", "acc_alert", "steer_required", "dist_lines", "dashed_lanes"])
 
 
 class CarController(object):
@@ -106,7 +107,7 @@ class CarController(object):
     self.brake_last = rate_limit(brake, self.brake_last, -2., 1./100)
 
     # vehicle hud display, wait for one update from 10Hz 0x304 msg
-    if hud_show_lanes:
+    if hud_show_lanes and CS.lkMode and not CS.left_blinker_on and not CS.right_blinker_on:
       hud_lanes = 1
     else:
       hud_lanes = 0
@@ -118,16 +119,20 @@ class CarController(object):
         hud_car = 1
     else:
       hud_car = 0
-
+      
     # For lateral control-only, send chimes as a beep since we don't send 0x1fa
     if CS.CP.radarOffCan:
       snd_beep = snd_beep if snd_beep is not 0 else snd_chime
+      
+    # Do not send audible alert when steering is disabled or blinkers on
+    #if not CS.lkMode or CS.left_blinker_on or CS.right_blinker_on:
+    #  snd_chime = 0
 
     #print chime, alert_id, hud_alert
     fcw_display, steer_required, acc_alert = process_hud_alert(hud_alert)
 
     hud = HUDData(int(pcm_accel), int(round(hud_v_cruise)), 1, hud_car,
-                  0xc1, hud_lanes, int(snd_beep), snd_chime, fcw_display, acc_alert, steer_required)
+                  0xc1, hud_lanes, int(snd_beep), snd_chime, fcw_display, acc_alert, steer_required, CS.read_distance_lines, CS.lkMode)
 
     # **** process the car messages ****
 
@@ -145,16 +150,16 @@ class CarController(object):
     apply_brake = int(clip(self.brake_last * BRAKE_MAX, 0, BRAKE_MAX - 1))
     apply_steer = int(clip(-actuators.steer * STEER_MAX, -STEER_MAX, STEER_MAX))
 
-    lkas_active = enabled and not CS.steer_not_allowed
+    lkas_active = enabled and not CS.steer_not_allowed and CS.lkMode and not CS.left_blinker_on and not CS.right_blinker_on  # add LKAS button to toggle steering
 
     # Send CAN commands.
     can_sends = []
-
+    
     # Send steering command.
     idx = frame % 4
     can_sends.append(hondacan.create_steering_control(self.packer, apply_steer,
       lkas_active, CS.CP.carFingerprint, idx))
-
+   
     # Send dashboard UI commands.
     if (frame % 10) == 0:
       idx = (frame/10) % 4
