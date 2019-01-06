@@ -34,7 +34,7 @@ def apply_deadzone(angle, deadzone):
 class LatControl(object):
   def __init__(self, CP):
 
-    _ADJUST_REACTANCE = 1.2
+    _ADJUST_REACTANCE = 0.8
     _ADJUST_INDUCTANCE = 1.5
     _ADJUST_RESISTANCE = 2.0
 
