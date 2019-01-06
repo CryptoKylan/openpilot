@@ -35,7 +35,7 @@ class LatControl(object):
   def __init__(self, CP):
 
     _ADJUST_REACTANCE = 1.2
-    _ADJUST_INDUCTANCE = 1.0
+    _ADJUST_INDUCTANCE = 1.2
     _ADJUST_RESISTANCE = 1.0
 
     KpV = [np.interp(25.0, CP.steerKpBP, CP.steerKpV) * _ADJUST_REACTANCE]
