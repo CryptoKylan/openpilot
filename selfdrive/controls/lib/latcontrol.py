@@ -83,9 +83,9 @@ class LatControl(object):
   def update_rt_params(self, CP):
     # TODO:  Is this really necessary, or is the original reference preserved through the cap n' proto setup?
     # Real-time tuning:  Update these values from the CP if called from real-time tuning logic in controlsd
-    self.pid._k_p = (CP.steerKpBP, CP.steerKpV)    # proportional gain
-    self.pid._k_i = (CP.steerKiBP, CP.steerKiV)    # integral gain
-    self.pid.k_f = CP.steerKf                         # feedforward gain
+    KpV = [np.interp(25.0, CP.steerKpBP, CP.steerKpV) * _ADJUST_REACTANCE]
+    KiV = [np.interp(25.0, CP.steerKiBP, CP.steerKiV) * _ADJUST_REACTANCE]
+    Kf = CP.steerKf * _ADJUST_INDUCTANCE
     self.setup_mpc(CP.steerRateCost)
 
   def setup_mpc(self, steer_rate_cost):
