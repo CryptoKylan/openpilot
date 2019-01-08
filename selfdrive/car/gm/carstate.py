@@ -22,7 +22,7 @@ def get_powertrain_can_parser(CP, canbus):
     ("AcceleratorPedal", "AcceleratorPedal", 0),
     ("ACCButtons", "ASCMSteeringButton", CruiseButtons.UNPRESS),
     ("SteeringWheelAngle", "PSCMSteeringAngle", 0),
-    ("SteeringWheelAngle", "PSCMSteeringRate", 0),
+    ("SteeringWheelRate", "PSCMSteeringAngle", 0),
     ("FLWheelSpd", "EBCMWheelSpdFront", 0),
     ("FRWheelSpd", "EBCMWheelSpdFront", 0),
     ("RLWheelSpd", "EBCMWheelSpdRear", 0),
