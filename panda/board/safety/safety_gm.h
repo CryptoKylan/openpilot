@@ -200,7 +200,7 @@ static int gm_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
     }
 
     if (violation) {
-      return false;
+      return true;
     }
   }
 
