@@ -35,9 +35,9 @@ def apply_deadzone(angle, deadzone):
 class LatControl(object):
   def __init__(self, CP):
 
-    _ADJUST_REACTANCE = 1.08
+    _ADJUST_REACTANCE = 1.0
     _ADJUST_INDUCTANCE = 1.0
-    _ADJUST_RESISTANCE = 2.0
+    _ADJUST_RESISTANCE = 1.0
 
     # Eliminate break-points, since they aren't needed (and would cause problems for resonance)
     KpV = [np.interp(25.0, CP.steerKpBP, CP.steerKpV) * _ADJUST_REACTANCE]
