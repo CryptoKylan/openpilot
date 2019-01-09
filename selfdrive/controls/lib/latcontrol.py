@@ -36,7 +36,7 @@ class LatControl(object):
   def __init__(self, CP):
 
     _ADJUST_REACTANCE = 1.0
-    _ADJUST_INDUCTANCE = 1.0
+    _ADJUST_INDUCTANCE = 1.2
     _ADJUST_RESISTANCE = 1.0
 
     # Eliminate break-points, since they aren't needed (and would cause problems for resonance)
