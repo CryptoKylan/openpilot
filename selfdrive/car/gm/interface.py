@@ -188,8 +188,8 @@ class CarInterface(object):
       
       ret.steerReactance = 1.0
       ret.steerInductance = 1.0
-      ret.steerResistance = 1.0
-      ret.eonToFront = 1.0
+      ret.steerResistance = 2.0
+      ret.eonToFront = 1.5
 
       ret.steerMaxBP = [0.] # m/s
       ret.steerMaxV = [1.]
