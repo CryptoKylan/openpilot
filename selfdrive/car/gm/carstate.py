@@ -97,6 +97,7 @@ class CarState(object):
     self.standstill = self.v_ego_raw < 0.01
 
     self.angle_steers = pt_cp.vl["PSCMSteeringAngle"]['SteeringWheelAngle']
+    self.angle_steers_rate = pt_cp.vl["PSCMSteeringRate"]['SteeringWheelAngle']
     self.gear_shifter = parse_gear_shifter(pt_cp.vl["ECMPRDNL"]['PRNDL'])
     self.user_brake = pt_cp.vl["EBCMBrakePedalPosition"]['BrakePedalPosition']
 
