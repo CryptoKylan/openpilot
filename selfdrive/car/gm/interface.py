@@ -186,9 +186,9 @@ class CarInterface(object):
       ret.steerKpV, ret.steerKiV = [[0.63], [0.1]]
       ret.steerKf = 0.00006  # full torque for 20 deg at 80mph means 0.00007818594
       
-      ret.steerReactance = 1.0
+      ret.steerReactance = 0.7
       ret.steerInductance = 1.0
-      ret.steerResistance = 2.0
+      ret.steerResistance = 1.0
       ret.eonToFront = 1.5
 
       ret.steerMaxBP = [0.] # m/s
