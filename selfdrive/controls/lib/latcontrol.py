@@ -69,6 +69,9 @@ class LatControl(object):
     #KiV = [np.interp(25.0, CP.steerKiBP, CP.steerKiV) * _ADJUST_REACTANCE]
     #Kf = CP.steerKf * _ADJUST_INDUCTANCE
     self.setup_mpc(CP.steerRateCost)
+    self.smooth_factor = CP.steerInductance * 2.0 * CP.steerActuatorDelay / _DT
+    self.projection_factor = CP.steerReactance * 5.0 * _DT
+    self.accel_limit = 2.0 / CP.steerResistance     
 
   def setup_mpc(self, steer_rate_cost):
     self.libmpc = libmpc_py.libmpc
