@@ -30,6 +30,7 @@ def get_powertrain_can_parser(CP, canbus):
     ("LKADriverAppldTrq", "PSCMStatus", 0),
     ("LKATorqueDeliveredStatus", "PSCMStatus", 0),
     ("DistanceButton", "ASCMSteeringButton", 0),
+    ("LKAButton", "ASCMSteeringButton", 0),
   ]
 
   if CP.carFingerprint == CAR.VOLT:
@@ -64,6 +65,7 @@ class CarState(object):
     self.right_blinker_on = False
     self.prev_right_blinker_on = False
     self.follow_level = 3
+    self.lkMode = True
 
     # vEgo kalman filter
     dt = 0.01
