@@ -159,12 +159,7 @@ class CarInterface(object):
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
       ret.steerKpV, ret.steerKiV = [[0.25], [0.00]]
       ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
-      
-      ret.steerReactance = 1.0
-      ret.steerInductance = 1.0
-      ret.steerResistance = 1.0
-      ret.eonToFront = 0.5
-
+  
       ret.steerMaxBP = [0.] # m/s
       ret.steerMaxV = [1.]
       ret.gasMaxBP = [0.]
@@ -190,12 +185,7 @@ class CarInterface(object):
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
       ret.steerKpV, ret.steerKiV = [[0.45], [0.1]]
       ret.steerKf = 0.00004  # full torque for 20 deg at 80mph means 0.00007818594
-      
-      ret.steerReactance = 1.0
-      ret.steerInductance = 1.0
-      ret.steerResistance = 2.0
-      ret.eonToFront = 1.5
-
+  
       ret.steerMaxBP = [0.] # m/s
       ret.steerMaxV = [1.]
       ret.gasMaxBP = [0., 5.]
@@ -308,6 +298,7 @@ class CarInterface(object):
       buttonEvents.append(be)
 
     ret.buttonEvents = buttonEvents
+
     if self.CS.distance_button and self.CS.distance_button != self.CS.prev_distance_button:
        self.CS.follow_level -= 1
        if self.CS.follow_level < 1:
