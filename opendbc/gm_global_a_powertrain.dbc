@@ -134,9 +134,11 @@ BO_ 485 PSCMSteeringAngle: 8 K43_PSCM
  SG_ SteeringWheelRate : 27|12@0- (0.5,0) [-100|100] "deg/s"  NEO
 
 BO_ 489 EBCMVehicleDynamic: 8 K17_EBCM
- SG_ YawRate : 51|12@0- (0.0625,0) [-2047|2047] "grad/s"  NEO
- SG_ LateralAcceleration : 3|12@0- (0.0161,0) [-2047|2047] "m/s2"  NEO
- SG_ BrakePedalPressed : 6|1@0+ (1,0) [0|0] ""  NEO
+ SG_ BrakePedalPressed : 6|1@0+ (1,0) [0|0] "" NEO
+ SG_ NEW_SIGNAL_3 : 17|10@0- (1,0) [0|1] "" NEO
+ SG_ LateralAcceleration : 3|12@0- (0.0161,0) [-2047|2047] "m/s2" NEO
+ SG_ YawRate2 : 49|10@0- (0.0625,0) [-2047|2047] "grad/s" NEO
+ SG_ YawRate : 33|10@0- (0.0625,0) [-100|100] "grad/s" NEO
 
 BO_ 560 EPBStatus: 8 EPB
  SG_ EPBClosed : 12|1@0+ (1,0) [0|1] ""  NEO
