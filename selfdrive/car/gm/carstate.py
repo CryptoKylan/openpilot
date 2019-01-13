@@ -31,6 +31,7 @@ def get_powertrain_can_parser(CP, canbus):
     ("LKADriverAppldTrq", "PSCMStatus", 0),
     ("LKATorqueDeliveredStatus", "PSCMStatus", 0),
     ("DistanceButton", "ASCMSteeringButton", 0),
+    ("YawRate", "EBCMVehicleDynamic", 0),
   ]
 
   if CP.carFingerprint == CAR.VOLT:
