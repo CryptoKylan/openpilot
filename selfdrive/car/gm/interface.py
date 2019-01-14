@@ -222,7 +222,7 @@ class CarInterface(object):
     return ret
 
   # returns a car.CarState
-  def update(self, c, enabled):
+  def update(self, c):
 
     self.pt_cp.update(int(sec_since_boot() * 1e9), False)
     self.CS.update(self.pt_cp)
@@ -320,8 +320,8 @@ class CarInterface(object):
         events.append(create_event('commIssue', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     else:
       self.can_invalid_count = 0
-    if enabled and (self.CS.left_blinker_on or self.CS.right_blinker_on):
-      events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
+    #if enabled and (self.CS.left_blinker_on or self.CS.right_blinker_on):
+     # events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
     if self.CS.steer_error:
       events.append(create_event('steerUnavailable', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
     if self.CS.steer_not_allowed:
