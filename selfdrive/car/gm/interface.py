@@ -103,7 +103,7 @@ class CarInterface(object):
       ret.mass = 4353. * CV.LB_TO_KG + std_cargo
       ret.safetyModel = car.CarParams.SafetyModels.gm
       ret.wheelbase = 2.86
-      ret.steerRatio = 14.4  #end to end is 13.46
+      ret.steerRatio = 12.0  #end to end is 13.46
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4
 
@@ -189,12 +189,12 @@ class CarInterface(object):
     elif candidate == CAR.ACADIA:
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
       ret.steerKpV, ret.steerKiV = [[0.45], [0.1]]
-      ret.steerKf = 0.00004  # full torque for 20 deg at 80mph means 0.00007818594
+      ret.steerKf = 0.00003  # full torque for 20 deg at 80mph means 0.00007818594
       
-      ret.steerReactance = 0.7
+      ret.steerReactance = 1.0
       ret.steerInductance = 1.0
       ret.steerResistance = 1.0
-      ret.eonToFront = 1.5
+      ret.eonToFront = 1.0
   
       ret.steerMaxBP = [0.] # m/s
       ret.steerMaxV = [1.]
