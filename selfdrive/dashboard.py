@@ -25,8 +25,8 @@ from common.realtime import set_realtime_priority, Ratekeeper
 def dashboard_thread(rate=100):
   set_realtime_priority(4)
 
-  USER = 'admin'
-  PASSWORD = '5142056'
+  USER = ''
+  PASSWORD = ''
   DBNAME = 'carDB'
   #influx = InfluxDBClient('192.168.1.61', 8086, USER, PASSWORD, DBNAME)
   influx = InfluxDBClient('192.168.43.2', 8086, USER, PASSWORD, DBNAME)
