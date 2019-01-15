@@ -1,5 +1,5 @@
 #!/usr/bin/bash
 
-export PASSIVE="1"
+export PASSIVE="0"
 exec ./launch_chffrplus.sh
 
