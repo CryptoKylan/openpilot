@@ -29,7 +29,7 @@ def dashboard_thread(rate=100):
   PASSWORD = ''
   DBNAME = 'carDB'
   #influx = InfluxDBClient('192.168.1.61', 8086, USER, PASSWORD, DBNAME)
-  influx = InfluxDBClient('192.168.43.2', 8086, USER, PASSWORD, DBNAME)
+  influx = InfluxDBClient('192.168.43.198', 8086, USER, PASSWORD, DBNAME)
   influxLineString = ""
 
   context = zmq.Context()
