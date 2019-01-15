@@ -88,6 +88,17 @@ class LatControl(object):
     self.curvature_factor = 0.0
     self.mpc_frame = 0
 
+  def update_rt_params(self, CP):
+    # TODO:  Is this really necessary, or is the original reference preserved through the cap n' proto setup?
+    # Real-time tuning:  Update these values from the CP if called from real-time tuning logic in controlsd
+    #KpV = [np.interp(25.0, CP.steerKpBP, CP.steerKpV) * _ADJUST_REACTANCE]
+    #KiV = [np.interp(25.0, CP.steerKiBP, CP.steerKiV) * _ADJUST_REACTANCE]
+    #Kf = CP.steerKf * _ADJUST_INDUCTANCE
+    self.setup_mpc(CP.steerRateCost)
+    self.smooth_factor = CP.steerInductance * 2.0 * CP.steerActuatorDelay / _DT
+    self.projection_factor = CP.steerReactance * 5.0 * _DT
+    self.accel_limit = 2.0 / CP.steerResistance    
+
   def setup_mpc(self, steer_rate_cost):
     self.libmpc = libmpc_py.libmpc
     self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, steer_rate_cost)
