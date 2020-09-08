@@ -200,9 +200,9 @@ class CarInterface(object):
       ret.longPidDeadzoneBP = [0.]
       ret.longPidDeadzoneV = [0.]
 
-      ret.longitudinalKpBP = [0., 5., 35.]
-      ret.longitudinalKpV = [3.5, 1.1, 0.7]
-      ret.longitudinalKiBP = [0., 5., 35.]
+      ret.longitudinalKpBP = [0., 2., 35.]
+      ret.longitudinalKpV = [3., 1.1, 0.7]
+      ret.longitudinalKiBP = [0., 2., 35.]
       ret.longitudinalKiV = [0.25, 0.12, 0.08]
 
       ret.steerLimitAlert = True
