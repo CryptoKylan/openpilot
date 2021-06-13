@@ -1,108 +1,86 @@
 """Utilities for reading real time clocks and keeping soft real time constraints."""
+import gc
 import os
 import time
-import platform
-import threading
-import subprocess
 import multiprocessing
+from typing import Optional
 
-from cffi import FFI
-ffi = FFI()
-ffi.cdef("""
-
-typedef int clockid_t;
-struct timespec {
-    long tv_sec;   /* Seconds.  */
-    long tv_nsec;  /* Nanoseconds.  */
-};
-int clock_gettime (clockid_t clk_id, struct timespec *tp);
-
-long syscall(long number, ...);
-
-"""
-)
-libc = ffi.dlopen(None)
+from common.clock import sec_since_boot  # pylint: disable=no-name-in-module, import-error
+from selfdrive.hardware import PC, TICI
 
 
-# see <linux/time.h>
-CLOCK_MONOTONIC_RAW = 4
-CLOCK_BOOTTIME = 7
+# time step for each process
+DT_CTRL = 0.01  # controlsd
+DT_MDL = 0.05  # model
+DT_TRML = 0.5  # thermald and manager
 
-if platform.system() != 'Darwin' and hasattr(libc, 'clock_gettime'):
-  c_clock_gettime = libc.clock_gettime
-
-  tlocal = threading.local()
-  def clock_gettime(clk_id):
-    if not hasattr(tlocal, 'ts'):
-      tlocal.ts = ffi.new('struct timespec *')
-
-    ts = tlocal.ts
-
-    r = c_clock_gettime(clk_id, ts)
-    if r != 0:
-      raise OSError("clock_gettime")
-    return ts.tv_sec + ts.tv_nsec * 1e-9
+# driver monitoring
+if TICI:
+  DT_DMON = 0.05
 else:
-  # hack. only for OS X < 10.12
-  def clock_gettime(clk_id):
-    return time.time()
-
-def monotonic_time():
-  return clock_gettime(CLOCK_MONOTONIC_RAW)
-
-def sec_since_boot():
-  return clock_gettime(CLOCK_BOOTTIME)
+  DT_DMON = 0.1
 
 
-def set_realtime_priority(level):
-  if os.getuid() != 0:
-    print("not setting priority, not root")
-    return
-  if platform.machine() == "x86_64":
-    NR_gettid = 186
-  elif platform.machine() == "aarch64":
-    NR_gettid = 178
-  else:
-    raise NotImplementedError
+class Priority:
+  # CORE 2
+  # - modeld = 55
+  # - camerad = 54
+  CTRL_LOW = 51 # plannerd & radard
 
-  tid = libc.syscall(NR_gettid)
-  return subprocess.call(['chrt', '-f', '-p', str(level), str(tid)])
+  # CORE 3
+  # - boardd = 55
+  CTRL_HIGH = 53
 
 
-class Ratekeeper(object):
-  def __init__(self, rate, print_delay_threshold=0.):
+def set_realtime_priority(level: int) -> None:
+  if not PC:
+    os.sched_setscheduler(0, os.SCHED_FIFO, os.sched_param(level))  # type: ignore[attr-defined]
+
+
+def set_core_affinity(core: int) -> None:
+  if not PC:
+    os.sched_setaffinity(0, [core,])
+
+
+def config_realtime_process(core: int, priority: int) -> None:
+  gc.disable()
+  set_realtime_priority(priority)
+  set_core_affinity(core)
+
+
+class Ratekeeper:
+  def __init__(self, rate: int, print_delay_threshold: Optional[float] = 0.0) -> None:
     """Rate in Hz for ratekeeping. print_delay_threshold must be nonnegative."""
     self._interval = 1. / rate
     self._next_frame_time = sec_since_boot() + self._interval
     self._print_delay_threshold = print_delay_threshold
     self._frame = 0
-    self._remaining = 0
+    self._remaining = 0.0
     self._process_name = multiprocessing.current_process().name
 
   @property
-  def frame(self):
+  def frame(self) -> int:
     return self._frame
 
   @property
-  def remaining(self):
+  def remaining(self) -> float:
     return self._remaining
 
   # Maintain loop rate by calling this at the end of each loop
-  def keep_time(self):
+  def keep_time(self) -> bool:
     lagged = self.monitor_time()
     if self._remaining > 0:
       time.sleep(self._remaining)
     return lagged
 
   # this only monitor the cumulative lag, but does not enforce a rate
-  def monitor_time(self):
+  def monitor_time(self) -> bool:
     lagged = False
     remaining = self._next_frame_time - sec_since_boot()
     self._next_frame_time += self._interval
-    if remaining < -self._print_delay_threshold:
+    if self._print_delay_threshold is not None and remaining < -self._print_delay_threshold:
       print("%s lagging by %.2f ms" % (self._process_name, -remaining * 1000))
       lagged = True
     self._frame += 1
     self._remaining = remaining
     return lagged
-

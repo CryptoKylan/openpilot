@@ -4,6 +4,7 @@ Dependencies
 **Mac**
 
 ```
+xcode-select --install
 ./get_sdk_mac.sh
 ```
 
@@ -20,13 +21,8 @@ Programming
 **Panda**
 
 ```
-make
-```
-
-**NEO**
-
-```
-make -f Makefile.legacy
+scons -u # Compile
+./flash.sh # Compile & Flash
 ```
 
 Troubleshooting
@@ -34,7 +30,7 @@ Troubleshooting
 
 If your panda will not flash and is quickly blinking a single Green LED, use:
 ```
-make recover
+./recover.sh
 ```
 
 
